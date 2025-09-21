@@ -1,0 +1,32 @@
+# Ignore everything by default
+*
+
+# Allow only key project files/folders
+!.gitignore
+!package.json
+!package-lock.json
+!README.md
+!src/
+!public/
+!config/
+!server.js
+!index.js
+
+# === Standard Node.js exclusions ===
+node_modules/
+.cache/
+dist/
+build/
+coverage/
+.env
+.env.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Optional IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

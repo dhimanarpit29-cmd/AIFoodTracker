@@ -1,0 +1,37 @@
+{
+  "name": "foodappbb",
+  "version": "1.0.0",
+  "description": "AI-Powered Meal Plate Analyzer - Full Stack Application",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server": "cd server && npm start",
+    "server:dev": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "client:dev": "cd client && npm run start",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
+    "build": "cd client && npm run build",
+    "test": "cd server && npm test && cd ../client && npm test",
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron .\""
+  },
+  "keywords": [
+    "meal-analyzer",
+    "nutrition",
+    "ai",
+    "react",
+    "electron",
+    "fullstack"
+  ],
+  "author": "AI-Powered Meal Plate Analyzer Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "electron": "^25.0.0",
+    "wait-on": "^7.0.1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2"
+  }
+}
