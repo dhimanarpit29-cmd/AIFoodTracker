@@ -177,24 +177,24 @@ const MealHistory = () => {
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                       <div>
                         <span className="text-gray-600">Calories:</span>
-                        <span className="ml-1 font-medium">{meal.totalNutrition.calories}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Protein:</span>
-                        <span className="ml-1 font-medium">{meal.totalNutrition.protein}g</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Carbs:</span>
-                        <span className="ml-1 font-medium">{meal.totalNutrition.carbs}g</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Fat:</span>
-                        <span className="ml-1 font-medium">{meal.totalNutrition.fat}g</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Fiber:</span>
-                        <span className="ml-1 font-medium">{meal.totalNutrition.fiber}g</span>
-                      </div>
+                    <span className="ml-1 font-medium">{meal.totalNutrition?.calories || 0}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Protein:</span>
+                    <span className="ml-1 font-medium">{meal.totalNutrition?.protein || 0}g</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Carbs:</span>
+                    <span className="ml-1 font-medium">{meal.totalNutrition?.carbs || 0}g</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Fat:</span>
+                    <span className="ml-1 font-medium">{meal.totalNutrition?.fat || 0}g</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Fiber:</span>
+                    <span className="ml-1 font-medium">{meal.totalNutrition?.fiber || 0}g</span>
+                  </div>
                     </div>
 
                     {meal.notes && (

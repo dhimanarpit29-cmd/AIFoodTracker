@@ -50,7 +50,7 @@ router.post('/upload', authenticateToken, upload.single('image'), [
       return res.status(400).json({ error: 'No image file provided' });
     }
 
-    const { mealType, name, tags, notes } = req.body;
+    const { mealType, name, tags, notes, date } = req.body;
 
     // Analyze the image using AI (enhanced implementation)
     const analysis = await analyzeMealImage(req.file.path);
@@ -65,7 +65,9 @@ router.post('/upload', authenticateToken, upload.single('image'), [
       tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
       notes: notes || '',
       detected_foods: analysis.detectedFoods || [],
-      ai_analysis: analysis.aiAnalysis || {}
+      ai_analysis: analysis.aiAnalysis || {},
+      confidence: analysis.confidence,
+      date: date
     };
 
     const meal = Meal.create(mealData);

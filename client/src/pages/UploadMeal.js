@@ -312,26 +312,26 @@ const UploadMeal = () => {
                 <div>
                   <h3 className="font-medium text-gray-900 mb-2">Detected Foods</h3>
                   <div className="space-y-2">
-                    {analysisResult.detectedFoods.map((food, index) => (
-                      <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <div className="flex-1">
-                          <span className="text-sm font-medium">{food.name}</span>
-                          {food.confidence && (
-                            <div className="text-xs text-gray-500 mt-1">
-                              Confidence: {Math.round(food.confidence * 100)}%
-                            </div>
-                          )}
+                {analysisResult.detectedFoods && analysisResult.detectedFoods.map((food, index) => (
+                  <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <div className="flex-1">
+                      <span className="text-sm font-medium">{food.name}</span>
+                      {food.confidence && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          Confidence: {Math.round(food.confidence * 100)}%
                         </div>
-                        <div className="text-right">
-                          <div className="text-sm font-medium">
-                            {food.nutrition.calories} cal
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            P: {food.nutrition.protein}g C: {food.nutrition.carbs}g F: {food.nutrition.fat}g
-                          </div>
-                        </div>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-medium">
+                        {food.nutrition.calories} cal
                       </div>
-                    ))}
+                      <div className="text-xs text-gray-500">
+                        P: {food.nutrition.protein}g C: {food.nutrition.carbs}g F: {food.nutrition.fat}g
+                      </div>
+                    </div>
+                  </div>
+                ))}
                   </div>
                 </div>
 

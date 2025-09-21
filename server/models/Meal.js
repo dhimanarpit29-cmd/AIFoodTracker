@@ -14,68 +14,91 @@ class Meal {
       meal_type,
       tags,
       notes,
-      detected_foods = [],
-      ai_analysis = {}
+      detected_foods,
+      ai_analysis,
+      date,
     } = mealData;
 
-    // Insert meal
+    const mealDate = date ? new Date(date).toISOString() : new Date().toISOString();
+
+    // Validate required parameters
+    if (!user_id || !name || !image_url || !meal_type) {
+      throw new Error('Missing required parameters: user_id, name, image_url, and meal_type are required');
+    }
+
+    // Insert meal with proper error handling
     const stmt = db.prepare(`
-      INSERT INTO meals (user_id, name, image_url, image_path, meal_type, tags, notes)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO meals (user_id, name, image_url, image_path, meal_type, tags, notes, date, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     `);
 
-    const result = stmt.run(user_id, name, image_url, image_path, meal_type, tags || '', notes || '');
-    const mealId = result.lastInsertRowid;
+    try {
+      const result = stmt.run(
+        user_id,
+        name,
+        image_url,
+        image_path || null,
+        meal_type,
+        tags && Array.isArray(tags) ? tags.join(', ') : (tags || ''),
+        notes || '',
+        mealDate
+      );
+      const mealId = result.lastInsertRowid;
 
-    // Insert detected foods
-    if (detected_foods.length > 0) {
-      const foodStmt = db.prepare(`
-        INSERT INTO detected_foods (meal_id, name, confidence, calories, protein, carbs, fat, fiber)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `);
+      // Insert detected foods
+      if (detected_foods && detected_foods.length > 0) {
+        const foodStmt = db.prepare(`
+          INSERT INTO detected_foods (meal_id, name, confidence, calories, protein, carbs, fat, fiber)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `);
 
-      for (const food of detected_foods) {
-        foodStmt.run(
+        for (const food of detected_foods) {
+          foodStmt.run(
+            mealId,
+            food.name,
+            food.confidence || 0,
+            food.nutrition?.calories || 0,
+            food.nutrition?.protein || 0,
+            food.nutrition?.carbs || 0,
+            food.nutrition?.fat || 0,
+            food.nutrition?.fiber || 0
+          );
+        }
+      }
+
+      // Insert AI analysis
+      if (ai_analysis && Object.keys(ai_analysis).length > 0) {
+        const analysisStmt = db.prepare(`
+          INSERT INTO ai_analysis (
+            meal_id, overall_assessment, nutritional_balance, recommendations,
+            macro_protein, macro_carbs, macro_fat,
+            total_calories, total_protein, total_carbs, total_fat, total_fiber
+          )
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        analysisStmt.run(
           mealId,
-          food.name,
-          food.confidence || 0,
-          food.nutrition?.calories || 0,
-          food.nutrition?.protein || 0,
-          food.nutrition?.carbs || 0,
-          food.nutrition?.fat || 0,
-          food.nutrition?.fiber || 0
+          ai_analysis.overallAssessment || '',
+          ai_analysis.nutritionalBalance || '',
+          JSON.stringify(ai_analysis.recommendations || []),
+          ai_analysis.macroDistribution?.protein || 0,
+          ai_analysis.macroDistribution?.carbs || 0,
+          ai_analysis.macroDistribution?.fat || 0,
+          ai_analysis.totalNutrition?.calories || 0,
+          ai_analysis.totalNutrition?.protein || 0,
+          ai_analysis.totalNutrition?.carbs || 0,
+          ai_analysis.totalNutrition?.fat || 0,
+          ai_analysis.totalNutrition?.fiber || 0
         );
       }
+
+      return this.findById(mealId);
+    } catch (error) {
+      console.error('Error creating meal:', error);
+      console.error('Meal data received:', JSON.stringify(mealData, null, 2));
+      throw new Error(`Failed to create meal: ${error.message}`);
     }
-
-    // Insert AI analysis
-    if (ai_analysis && Object.keys(ai_analysis).length > 0) {
-      const analysisStmt = db.prepare(`
-        INSERT INTO ai_analysis (
-          meal_id, overall_assessment, nutritional_balance, recommendations,
-          macro_protein, macro_carbs, macro_fat,
-          total_calories, total_protein, total_carbs, total_fat, total_fiber
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
-
-      analysisStmt.run(
-        mealId,
-        ai_analysis.overallAssessment || '',
-        ai_analysis.nutritionalBalance || '',
-        JSON.stringify(ai_analysis.recommendations || []),
-        ai_analysis.macroDistribution?.protein || 0,
-        ai_analysis.macroDistribution?.carbs || 0,
-        ai_analysis.macroDistribution?.fat || 0,
-        ai_analysis.totalNutrition?.calories || 0,
-        ai_analysis.totalNutrition?.protein || 0,
-        ai_analysis.totalNutrition?.carbs || 0,
-        ai_analysis.totalNutrition?.fat || 0,
-        ai_analysis.totalNutrition?.fiber || 0
-      );
-    }
-
-    return this.findById(mealId);
   }
 
   static findById(id) {

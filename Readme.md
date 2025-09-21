@@ -26,7 +26,7 @@ A comprehensive food analysis application that uses advanced AI to analyze meal 
 
 ### Backend
 - **Node.js** with Express.js
-- **MongoDB** with Mongoose ODM
+- **SQLite** with `better-sqlite3`
 - **Google Cloud Vision API** for food detection
 - **Nutritionix API** for nutritional data
 - **JWT Authentication**
@@ -43,7 +43,7 @@ A comprehensive food analysis application that uses advanced AI to analyze meal 
 
 ### Prerequisites
 - Node.js (v14 or higher)
-- MongoDB
+- SQLite (auto-setup, no external installation needed)
 - Google Cloud Vision API credentials
 - Nutritionix API credentials
 
@@ -67,8 +67,8 @@ npm install
 Create a `.env` file in the server directory:
 
 ```env
-# Database Configuration
-MONGODB_URI=mongodb://localhost:27017/meal-analyzer
+# Database Configuration (Using SQLite)
+DB_PATH=./database.sqlite
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-here
