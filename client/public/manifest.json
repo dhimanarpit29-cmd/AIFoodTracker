@@ -1,6 +1,6 @@
 {
-  "short_name": "MealAnalyzer",
-  "name": "AI-Powered Meal Plate Analyzer",
+  "short_name": "CalWise",
+  "name": "CalWise - Smart Nutrition Tracker",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,7 +20,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#3b82f6",
-  "background_color": "#ffffff",
-  "description": "AI-Powered Meal Plate Analyzer - Track calories, analyze nutrition, and get personalized health insights from your meal photos."
+  "theme_color": "#4ADE80",
+  "background_color": "#1E293B",
+  "description": "CalWise - Your intelligent nutrition companion. Track calories, analyze meals, and achieve your health goals with AI-powered insights."
 }

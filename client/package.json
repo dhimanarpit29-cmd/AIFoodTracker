@@ -1,7 +1,7 @@
 {
-  "name": "meal-analyzer-client",
+  "name": "calwise-client",
   "version": "1.0.0",
-  "description": "Frontend for AI-Powered Meal Plate Analyzer",
+  "description": "Frontend for CalWise - Smart Nutrition Tracker",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
@@ -45,7 +45,7 @@
     ]
   },
   "proxy": "http://localhost:5000",
-  "keywords": ["meal-analyzer", "nutrition", "ai", "react"],
-  "author": "AI-Powered Meal Plate Analyzer Team",
+  "keywords": ["calwise", "nutrition", "ai", "react", "health", "calorie-tracker"],
+  "author": "CalWise Team",
   "license": "MIT"
 }

@@ -12,8 +12,10 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import About from './pages/About';
 import Dashboard from './pages/Dashboard';
 import UploadMeal from './pages/UploadMeal';
 import MealHistory from './pages/MealHistory';
@@ -26,62 +28,85 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="App">
-          <Navbar />
-          <main className="main-content">
-            <Routes>
-              {/* Public routes */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+          <Routes>
+            {/* Public routes - no navbar */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/about" element={<About />} />
 
-              {/* Protected routes */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/upload"
-                element={
-                  <ProtectedRoute>
-                    <UploadMeal />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/history"
-                element={
-                  <ProtectedRoute>
-                    <MealHistory />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/analytics"
-                element={
-                  <ProtectedRoute>
-                    <Analytics />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
+            {/* Protected routes - with navbar */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                    <main className="main-content">
+                      <Dashboard />
+                    </main>
+                  </>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/upload"
+              element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                    <main className="main-content">
+                      <UploadMeal />
+                    </main>
+                  </>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/history"
+              element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                    <main className="main-content">
+                      <MealHistory />
+                    </main>
+                  </>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                    <main className="main-content">
+                      <Analytics />
+                    </main>
+                  </>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                    <main className="main-content">
+                      <Profile />
+                    </main>
+                  </>
+                </ProtectedRoute>
+              }
+            />
 
-              {/* Redirect root to dashboard */}
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            {/* Landing page - public */}
+            <Route path="/" element={<Landing />} />
 
-              {/* 404 route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
+            {/* 404 route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
           <ToastContainer
             position="top-right"
             autoClose={5000}
