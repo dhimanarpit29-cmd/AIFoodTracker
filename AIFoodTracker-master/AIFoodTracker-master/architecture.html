@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalWise Application Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1E293B; /* from manifest.json background_color */
+            --text-color: #CBD5E1;
+            --heading-color: #E2E8F0;
+            --accent-color: #4ADE80; /* from manifest.json theme_color */
+            --card-bg: #334155;
+            --border-color: #475569;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 5000px;
+            margin: 0 auto;
+        }
+        h1, h2, h3 {
+            color: var(--heading-color);
+            font-weight: 600;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 1rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            border-left: none;
+            padding-left: 0;
+            margin-bottom: 2rem;
+        }
+        h1 span {
+            color: var(--accent-color);
+        }
+        h2 {
+            font-size: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-left-width: 3px;
+        }
+        h4 {
+            font-size: 1.2rem;
+            color: var(--heading-color);
+            font-weight: 500;
+        }
+        p, ul, ol {
+            margin-bottom: 1rem;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        strong {
+            color: var(--heading-color);
+            font-weight: 600;
+        }
+        code {
+            background-color: var(--card-bg);
+            color: var(--accent-color);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .section {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .mermaid {
+            background-color: #f9fafb; /* Light background for better diagram contrast */
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span>CalWise</span> Application Architecture</h1>
+
+        <div class="section">
+            <h2>Architecture Diagram</h2>
+            <div class="mermaid">
+graph TD
+    subgraph "User's Browser"
+        U[<font size=7>👨‍💻</font><br/><font size=4>User</font>]
+    end
+
+    subgraph "Frontend (React Client)<br/>localhost:3000"
+        subgraph "React Application"
+            direction TB
+            Router["<font size=6>🌐</font><br/><font size=4>React Router</font>"]
+            Auth["<font size=6>🔑</font><br/><font size=4>Auth Context</font>"]
+            Pages["<font size=6>📄</font><br/><font size=4>Pages & Components</font><br/><font size=3>(Dashboard, Login, Navbar)</font>"]
+            Styling["<font size=6>🎨</font><br/><font size=4>UI Layer</font><br/><font size=3>(Tailwind, Icons, Toastify)</font>"]
+        end
+    end
+
+    subgraph "Backend (Node.js Server)<br/>localhost:5000"
+        direction TB
+        Node["<font size=6>🟢</font><br/><font size=4>Node.js Server</font>"]
+        API["<font size=6>🔌</font><br/><font size=4>REST API</font><br/><font size=3>(/api/auth, /api/meals, etc.)</font>"]
+        DB["<font size=6>🗄️</font><br/><font size=4>Database</font><br/><font size=3>(e.g., SQLite/PostgreSQL)</font>"]
+    end
+
+    %% --- Flows ---
+    U -- "1. Accesses App" --> Router
+    Router -- "Renders UI" --> Pages
+    Pages -- "Uses" --> Styling
+
+    %% Login Flow
+    U -- "2. Enters credentials on Login Page" --> Pages
+    Pages -- "3. Calls login() from AuthContext" --> Auth
+    Auth -- "4. POST /api/login" --> API
+    API -- "5. Validates against DB" --> DB
+    DB -- "6. Returns user data" --> API
+    API -- "7. Returns JWT & user info" --> Auth
+    Auth -- "8. Updates state (isAuthenticated=true)" --> Pages
+    Pages -- "9. Redirects to /dashboard via Router" --> Router
+
+    %% Protected Route Data Fetch
+    U -- "10. Navigates to protected page" --> Router
+    Router -- "11. ProtectedRoute checks AuthContext" --> Auth
+    Auth -- "12. Allows access" --> Router
+    Router -- "13. Renders page (e.g., Dashboard)" --> Pages
+    Pages -- "14. Fetches data (e.g., GET /api/meals)" --> API
+    API -- "15. Queries Database" --> DB
+    DB -- "16. Returns data" --> API
+    API -- "17. Returns data to page" --> Pages
+
+    %% Link backend components
+    Node --> API
+    API --> DB
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Architecture Explained</h2>
+            <p>The CalWise application follows a classic client-server architecture, composed of a React single-page application (SPA) for the frontend and a Node.js server for the backend API.</p>
+
+            <h3>1. Frontend (Client)</h3>
+            <p>The frontend is a modern React application built to provide a dynamic and responsive user experience.</p>
+            <ul>
+                <li><strong>Core Framework</strong>: <strong>React</strong> is used for building the user interface with a component-based structure.</li>
+                <li><strong>Routing</strong>: <strong>React Router DOM</strong> (<code>react-router-dom</code>) handles all client-side routing. The <code>ProtectedRoute</code> component acts as a gatekeeper, using an <code>AuthContext</code> to verify if a user is authenticated before allowing access.</li>
+                <li><strong>State Management</strong>: A React Context (<code>AuthContext</code>) is dedicated to managing the user's authentication state globally. It holds the user's data, authentication status, and provides <code>login</code> and <code>logout</code> functions that interact with the backend.</li>
+                <li><strong>UI and Styling</strong>: The UI is built with <strong>Tailwind CSS</strong> for a utility-first styling approach, <code>react-icons</code> for icons, and <code>react-toastify</code> for notifications.</li>
+            </ul>
+
+            <h3>2. Backend (Server)</h3>
+            <p>The backend is a Node.js application serving a REST API, likely built with a framework like Express.js.</p>
+            <ul>
+                <li><strong>Technology</strong>: <strong>Node.js</strong> is used to run the server, which listens on port <code>5000</code>.</li>
+                <li><strong>API Layer</strong>: It exposes a <strong>REST API</strong> to handle business logic, including endpoints for authentication (<code>/api/auth/login</code>) and data operations (<code>/api/meals/upload</code>).</li>
+                <li><strong>Database</strong>: The backend connects to a database (like <strong>SQLite</strong> as mentioned in the README) to persist user data, meal history, and other application information.</li>
+            </ul>
+
+            <h3>3. Key Interaction Flows</h3>
+            <h4>Authentication Flow</h4>
+            <ol>
+                <li>The user submits credentials on the <code>Login</code> page.</li>
+                <li>The frontend sends a <code>POST</code> request to the backend's <code>/api/login</code> endpoint.</li>
+                <li>The backend validates the credentials against the database.</li>
+                <li>Upon success, it generates a JSON Web Token (JWT) and sends it back to the client.</li>
+                <li>The frontend saves the token and updates its state, marking the user as authenticated and granting access to protected routes.</li>
+            </ol>
+
+            <h4>Data Fetching for Protected Routes</h4>
+            <ol>
+                <li>When a user navigates to a protected page like <code>/dashboard</code>, the frontend first confirms they are authenticated.</li>
+                <li>The page component then makes an API call (e.g., <code>GET /api/meals</code>) to the backend, sending the JWT for authorization.</li>
+                <li>The backend verifies the JWT, fetches the required data from the database, and returns it to the frontend to be displayed.</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>
